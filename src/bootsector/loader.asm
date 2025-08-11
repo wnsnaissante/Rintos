@@ -2,7 +2,22 @@
 [org 0x0000]
 
 start:
-    cli ; disable interrupt
+    cli
+    cld
+    
+    ; Align data segments
+    push cs
+    pop ds
+    push cs
+    pop es
+    
+    ; Initialize stack
+    mov ax, ds
+    mov ss, ax
+    mov sp, 0xFFFE
+    sti
+    
+    ; Set text mode for clean output
     mov ah, 0x00
     mov al, 0x03
     int 0x10

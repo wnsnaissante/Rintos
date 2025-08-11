@@ -11,6 +11,13 @@ start:
     mov ax, 0x0000
     mov es, ax
     mov ds, ax
+    
+    ; Initialize stack early
+    cli
+    mov ss, ax
+    mov sp, 0x7C00
+    sti
+    cld
 
     call clear_screen
     mov si, boot_msg
