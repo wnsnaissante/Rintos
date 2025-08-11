@@ -14,10 +14,10 @@ Rintos (inspired by Pintos) is a simple educational x86_64 operating system for 
 >
 
 ``` 
-build.bat
+.\build.bat
 ```
 ```
-qemu-system-x86_64 -fda rintos.img
+qemu-system-x86_64 -drive file=rintos.img,format=raw
 ```
 
 ## Roadmap
@@ -27,12 +27,19 @@ qemu-system-x86_64 -fda rintos.img
 - [x] Load 2nd stage Bootloader (from disk to memory and jump)
 
 ### v0.0.2 (2nd Stage Bootloader | Protected Mode) WIP
-- [ ] Setup basic segment registers (CS, DS, ES, SS) and stack in real mode
-- [ ] Setup Global Descriptor Table (GDT) for protected mode
-- [ ] Transition from Real Mode (16-bit) to Protected Mode (32-bit)
-- [ ] Setup basic stack and segment registers in protected mode
-- [ ] Simple protected mode environment test (e.g., print message in 32-bit mode)
+- [x] Setup basic segment registers (CS, DS, ES, SS) and stack in real mode
+- [x] Setup Global Descriptor Table (GDT) for protected mode
+- [x] Transition from Real Mode (16-bit) to Protected Mode (32-bit)
+- [x] Setup basic stack and segment registers in protected mode
+- [x] Simple protected mode environment test (e.g., print message in 32-bit mode)
 
 ### v0.0.3 (2nd Stage Bootloader | Long Mode)
-- [ ] Prepare for Long Mode (64-bit mode): setup PAE paging tables, enable CPU features needed for 64-bit mode
-- [ ] Switch to Long Mode (64-bit mode) with basic 64-bit code stub
+- [ ] Create 64-bit GDT (L-bit code, flat data)
+- [ ] Build minimal identity-mapped paging for long mode (2MiB large page covering 0–2MiB)
+- [ ] Enable long mode: CR4.PAE, CR3=PML4, EFER.LME, CR0.PG
+- [ ] Far jump to 64-bit code selector and run 64-bit stub
+- [ ] In 64-bit mode, set stack and print a test string to 0xB8000
+- [ ] Build and load 64-bit IDT (with basic exception stubs)
+- [ ] Remap PIC to 0x20–0x2F and unmask IRQ1 (keyboard)
+- [ ] Install 64-bit keyboard ISR at vector 0x21 and send EOI on 0x20
+- [ ] Enable interrupts (sti) and verify scancode reception

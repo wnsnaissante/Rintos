@@ -33,6 +33,6 @@ powershell -Command "$loader = [System.IO.File]::ReadAllBytes('loader.bin'); $im
 
 echo.
 echo Build complete: rintos.img
-echo Test with: qemu-system-x86_64 -fda rintos.img
+echo Test with: qemu-system-x86_64 -drive file=rintos.img,format=raw
 echo.
 pause 
