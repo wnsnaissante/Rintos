@@ -34,7 +34,7 @@ qemu-system-x86_64 -drive file=rintos.img,format=raw
 - [x] Simple protected mode environment test (e.g., print message in 32-bit mode)
 
 ### v0.0.3 (2nd Stage Bootloader | Long Mode)
-- [ ] Create 64-bit GDT (L-bit code, flat data)
+- [x] Create 64-bit GDT (L-bit code, flat data)
 - [ ] Build minimal identity-mapped paging for long mode (2MiB large page covering 0–2MiB)
 - [ ] Enable long mode: CR4.PAE, CR3=PML4, EFER.LME, CR0.PG
 - [ ] Far jump to 64-bit code selector and run 64-bit stub

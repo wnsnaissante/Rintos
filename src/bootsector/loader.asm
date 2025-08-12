@@ -21,8 +21,10 @@ start:
 
 ; GDT
 ; [0] Null
-; [1] Code: base=0, limit=4GB-1, access=0x9A, gran=0xCF
-; [2] Data: base=0, limit=4GB-1, access=0x92, gran=0xCF
+; [1] Code32: base=0, limit=4GB-1, access=0x9A, gran=0xCF
+; [2] Data32: base=0, limit=4GB-1, access=0x92, gran=0xCF
+; [3] Code64: base=0, limit=ignored,  access=0x9A, gran=0xAF (L=1, D=0, G=1)
+; [4] Data64: same as Data32 (ignored in long mode)
 gdt_start:
     dq 0
     dw 0xFFFF
@@ -31,6 +33,20 @@ gdt_start:
     db 0x9A
     db 0xCF
     db 0x00
+    dw 0xFFFF
+    dw 0x0000
+    db 0x00
+    db 0x92
+    db 0xCF
+    db 0x00
+    ; 64-bit code descriptor (L=1, D=0)
+    dw 0xFFFF
+    dw 0x0000
+    db 0x00
+    db 0x9A
+    db 0xAF
+    db 0x00
+    ; 64-bit data descriptor
     dw 0xFFFF
     dw 0x0000
     db 0x00
@@ -47,8 +63,10 @@ switch_pm:
     xor ebx, ebx
     mov bx, cs
     shl ebx, 4
-    CODE_DESC equ gdt_start + 8
-    DATA_DESC equ gdt_start + 16
+    CODE_DESC   equ gdt_start + 8
+    DATA_DESC   equ gdt_start + 16
+    CODE64_DESC equ gdt_start + 24
+    DATA64_DESC equ gdt_start + 32
     mov eax, ebx
     mov [CODE_DESC + 2], ax
     shr eax, 16
@@ -66,10 +84,12 @@ switch_pm:
     mov eax, cr0
     or eax, 1
     mov cr0, eax
-    jmp dword CODE_SEL:pm_entry
+    jmp dword CODE32_SEL:pm_entry
 
-CODE_SEL equ 0x08
-DATA_SEL equ 0x10
+CODE32_SEL   equ 0x08
+DATA32_SEL   equ 0x10
+CODE64_SEL equ 0x18
+DATA64_SEL equ 0x20
 
 print_string:
     mov ah, 0x0E
@@ -87,7 +107,7 @@ msg2 db "Stage 2 loaded and running!", 0
 ; ----- Protected-mode 32-bit code -----
 [bits 32]
 pm_entry:
-    mov ax, DATA_SEL
+    mov ax, DATA32_SEL
     mov ds, ax
     mov es, ax
     mov ss, ax
